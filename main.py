@@ -1,20 +1,7 @@
 from fastapi import FastAPI
-from fastapi import FastAPI, APIRouter
-from ai import generate_text
 
+from core.router import router as  core_router
 
 app = FastAPI()
-router = APIRouter(prefix="/api/v1")
 
-
-@router.get("/hello")
-async def root():
-    return {"message": "Hello World"}
-
-
-@router.get("/calculate")
-async def calculate():
-    text = generate_text("I love you")
-    return {"message": text}
-
-app.include_router(router)
+app.include_router(core_router, prefix='/api/v1', tags=['Application'])
