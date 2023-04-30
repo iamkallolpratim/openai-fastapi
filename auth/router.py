@@ -5,8 +5,8 @@ router = APIRouter()
 
 
 @router.get('/login')
-async def login():
-    return login()
+async def auth_login():
+    return  login()
 
 @router.get('/callback')
 async def callback():
