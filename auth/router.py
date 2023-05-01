@@ -1,3 +1,4 @@
+from fastapi import Request, Response, status
 from fastapi import APIRouter
 from .views import login , callback
 
@@ -9,6 +10,6 @@ async def auth_login():
     return  login()
 
 @router.get('/callback')
-async def callback():
-    return callback()
+async def auth_callback(request: Request, code: str, state: str = None):
+    return callback(request, code)
 

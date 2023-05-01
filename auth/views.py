@@ -19,6 +19,7 @@ def login():
 
 
 def callback(request: Request, code: str, state: str = None):
+    print(code)
     # Exchange the authorization code for an access token
     flow.fetch_token(code=code)
     credentials = flow.credentials
