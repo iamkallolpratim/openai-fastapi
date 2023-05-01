@@ -7,7 +7,7 @@ import google.auth
 
 flow = Flow.from_client_config(
     google_auth_credentials,
-    scopes=['profile', 'email'],
+    scopes=['https://www.googleapis.com/auth/userinfo.profile', 'openid' , 'https://www.googleapis.com/auth/userinfo.email'],
     redirect_uri='http://localhost:8000/api/v1/auth/callback'
 )
 
@@ -18,11 +18,9 @@ def login():
     return Response(status_code=status.HTTP_302_FOUND, headers={"Location": authorization_url})
 
 
-def callback(request: Request, code: str, state: str = None):
-    print(code)
+async def callback(request: Request, code: str, state: str = None):
     # Exchange the authorization code for an access token
     flow.fetch_token(code=code)
-    credentials = flow.credentials
-    print(credentials)
+    credentials = flow.credentials.to_json()
+    return {"message": "Authentication successful", "credentials": credentials}
 
-    return {"message": "Authentication successful"}

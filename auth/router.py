@@ -11,5 +11,5 @@ async def auth_login():
 
 @router.get('/callback')
 async def auth_callback(request: Request, code: str, state: str = None):
-    return callback(request, code)
+    return await  callback(request, code,state)
 
