@@ -8,9 +8,19 @@ load_dotenv()
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
+
+
 def hello_world(q):
-    response = {"message": "Hello World " f"{q}"}
-    return response
+    try:
+        if not q:
+            raise ValueError("Parameter 'q' is required")
+        response = {"message": "Hello World " + str(q)}
+        return response
+    except ValueError as e:
+        error_message = "An error occurred: " + str(e)
+        return {"error": error_message}
+
+
 
 
 def generate_text(prompt):
