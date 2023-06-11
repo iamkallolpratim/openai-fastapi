@@ -3,7 +3,6 @@ from core.router import router as  core_router
 from auth.router import router as auth_router
 
 import uvicorn;
-from database.database import database
 
 if __name__ == "__main__":
     uvicorn.run("server.app:app", host="0.0.0.0", port=8000, reload=True)
