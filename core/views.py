@@ -1,6 +1,3 @@
-from datetime import datetime
-
-import urllib3
 from database.database import database
 from bs4 import BeautifulSoup
 from collections import deque
@@ -11,8 +8,10 @@ import os
 import requests
 from models.url import URL
 from urllib.parse import urljoin, urlparse
-import numpy as np
-import re
+import requests
+from urllib.parse import urljoin
+from bs4 import BeautifulSoup
+from datetime import datetime
 
 headers = {'User-Agent': 'Mozilla/5.0'}
 
@@ -46,18 +45,16 @@ def generate_text(prompt):
     return response['choices'][0]['message']['content']
 
 
-def get_nested_urls(base_url):
-    visited_urls = set()
-    child_urls = set()
-    crawl_url(base_url, visited_urls, child_urls)
-    print('base_url', base_url)
-    return child_urls
 
 
-import requests
-from urllib.parse import urljoin
-from bs4 import BeautifulSoup
-from datetime import datetime
+def remove_newlines(serie):
+    serie = serie.str.replace('\n', ' ')
+    serie = serie.str.replace('\\n', ' ')
+    serie = serie.str.replace('  ', ' ')
+    serie = serie.str.replace('  ', ' ')
+    return serie
+
+
 
 def crawl_url(url, visited_urls):
     visited_urls.add(url)
@@ -75,10 +72,8 @@ def crawl_url(url, visited_urls):
     soup = BeautifulSoup(response.text, "html.parser")
 
     data = {
-        "text": soup.get_text(),
+        "text": remove_newlines(soup.get_text()),
     }
-    
-    print('data',data)
 
     timestamp = datetime.now()
     
@@ -111,7 +106,9 @@ async def process_url_handler(data: dict):
         "userID": data.get("userID")
     }
     collection.insert_one(item)
-    # Start crawling   
-    print(base_url)  # for debugging and to see the progress
-    crawl_url(base_url, visited_urls)
+    # Start crawling
+    while queue:
+        base_url = queue.pop()
+        print(base_url)  # for debugging and to see the progress
+        crawl_url(base_url, visited_urls)
     return {"message": f"URLs processed and saved successfully. {data}"}
